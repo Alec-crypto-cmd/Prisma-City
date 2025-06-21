@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prisma City</title>
+  <style>
+    body {
+      margin: 0
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #0f0f0f, #1a1a1a);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    h1 {
+      font-size: 3rem;
+      background: linear-gradient(to right, #00fff0, #ff00f7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    p {
+      font-size: 1.2rem;
+      color: #ccc;
+    }
+    .btn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background: #00fff0;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+    .btn:hover {
+      background: #00c9c0;
+    }
+  </style>
+</head>
+<body>
+  <h1>Willkommen bei Prisma City</h1>
+  <p>Ein Klassen Projekt</p>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Glowing Interactive Dots Grid</title>
+  <style>
+    body {
+      margin: 0;
+      background: #000;
+      overflow: hidden;
+    }
+    canvas {
+      display: block;
+    }
+    #message {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      font-size: 2rem;
+      font-family: 'Segoe UI', sans-serif;
+      opacity: 0;
+      transition: opacity 0.5s;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+<canvas id="dotCanvas"></canvas>
+<div id="message">Das ist eine Nachricht!</div>
+<script>
+  const canvas = document.getElementById('dotCanvas');
+  const ctx = canvas.getContext('2d');
+  const message = document.getElementById('message');
+  let width, height, dots = [], mouse = {}, isClicked = false;
+
+  function init() {
+    resize();
+    createDots();
+    animate();
+  }
+
+  function resize() {
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+  }
+
+  function createDots() {
+    dots = [];
+    const spacing = 50;
+    for (let x = spacing / 2; x < width; x += spacing) {
+      for (let y = spacing / 2; y < height; y += spacing) {
+        dots.push({ x, y, alpha: 0 });
+      }
+    }
+  }
+
+  function drawDots() {
+    ctx.clearRect(0, 0, width, height);
+    for (const d of dots) {
+      const dx = d.x - (mouse.x || -999);
+      const dy = d.y - (mouse.y || -999);
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      d.alpha = Math.max(0, 1 - dist / 200);
+
+      let r = 0, g = 255, b = 255;
+      if (isClicked) {
+        const intensity = Math.max(0, 1 - dist / 200);
+        r = 255;
+        g = Math.floor(105 + 150 * (1 - intensity)); // pink: g = 105..255
+        b = Math.floor(180 + 75 * (1 - intensity));  // pink: b = 180..255
+      }
+
+      ctx.beginPath();
+      ctx.arc(d.x, d.y, 3, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${r},${g},${b},${d.alpha})`;
+      ctx.fill();
+    }
+  }
+
+
+if (isClicked) {
+  const intensity = Math.max(0, 1 - dist / 200);
+  // Pink RGB ~ (255, 105, 180)
+  // Blau RGB ~ (0, 255, 255)
+  r = Math.floor(255 * intensity);
+  g = Math.floor(105 * intensity + 255 * (1 - intensity));
+  b = Math.floor(180 * intensity + 255 * (1 - intensity));
+}
+
+  
+  function animate() {
+    drawDots();
+    requestAnimationFrame(animate);
+  }
+
+  window.addEventListener('mousemove', e => {
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+  });
+
+  window.addEventListener('resize', init);
+
+  window.addEventListener('click', () => {
+    message.style.opacity = 1;
+    isClicked = true;
+    setTimeout(() => {
+      message.style.opacity = 0;
+    }, 10000); // 10 Sekunden
+    setTimeout(() => {
+      isClicked = false;
+    }, 10000); // Effekt ebenfalls 10 Sekunden
+  });
+
+  init();
+</script>
+</body>
+</html>
